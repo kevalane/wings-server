@@ -42,7 +42,9 @@ function sendRequest(url, method) {
 	});
 }
 
-// sendRequest('https://apitest.billecta.com/v1/authentication/securetoken', 'GET');
+// 4b101fd3-91eb-4bd6-adac-c314c293c781
+
+// sendRequest('https://apitest.billecta.com/v1/creditors/creditor', 'PUT');
 	
 // sendRequest(configUrl + '/v1/contractinvoice/monthlyrecurringautogiro', 'POST');
 
@@ -140,3 +142,152 @@ function sendRequest(url, method) {
 // 	});
 
 // DEBTOR PUBLIC ID : 0a3ee027-f1ec-4049-bec1-3e1394a8abaa
+
+var obj = {
+	"CreditorPublicId": '4b101fd3-91eb-4bd6-adac-c314c293c781',
+	"Address": "test",
+  	"Address2": "test2",
+  	"ZipCode": null,
+  	"City": null,
+  	"Email": null,
+  	"Phone": null,
+  	"DebtorExternalId": null,
+	"SSN": "20111111-5645",
+	"Name": "Jesper Rasmusson",
+	"ClearingNumber": "1234",
+  	"AccountNumber": "12344560",
+  	"Bank": "Swedbank",
+  	"Amount": 100,
+  	"WithdrawalDay": 27,
+  	"EndDate": null,
+  	"StartDate": null,
+  	"EnableAutomaticReminder": false,
+  	"EnableAutomaticDebtCollection": false
+}
+
+const headers = {
+	Authorization: 'Basic ' + api_key,
+	'Accept': 'application/json',
+	'Content-Length': 0
+}
+
+// var obj1 = {
+//   "CreditorPublicId": "4b101fd3-91eb-4bd6-adac-c314c293c781",
+//   "OrgNo": "010414-4092",
+//   "Name": "Nordicsell",
+//   "CreditorBankInfo": {
+//     "UsesClientFund": false,
+//     "PaymentMethod": "BankGiro",
+//     "BankgiroNo": "314134",
+//     "BankgiroNoVerified": true,
+//     "PlusgiroNo": "314134",
+//     "AccountNo": "314134",
+//     "ClearingNo": "314134",
+//     "SwishPaymentEnabled": false,
+//     "SwishNumber": null,
+//     "AutogiroEnabled": true,
+//     "AutogiroCustomerNumber": "314134",
+//     "EInvoiceFUI": "123456789012.12345678901.BANK.SE",
+//     "EInvoiceCUI": "1234567",
+//     "ForeignAccounts": [
+//       {
+//         "CurrencyCode": "SEK",
+//         "BankName": "SEB",
+//         "Iban": "13984890489758957987487",
+//         "Bic": "SWEDESS"
+//       },
+//       {
+//         "CurrencyCode": "EUR",
+//         "BankName": "SEB",
+//         "Iban": "13984890489758957987487",
+//         "Bic": "SWEDESS"
+//       }
+//     ],
+//     "CreditorOutgoingBankgiroes": [
+//       {
+//         "BankgiroNo": "123-4567",
+//         "IsActive": true,
+//         "BankgiroApproved": true,
+//         "Description": null,
+//         "BookkeepingPaymentMeanCode": null
+//       }
+//     ],
+//     "PaymentMethods": [
+//       {
+//         "Priority": "Primary",
+//         "PaymentMethod": "BankGiro",
+//         "BankgiroNo": "123-4567",
+//         "PlusgiroNo": "314134",
+//         "ClearingNo": "314134",
+//         "AccountNo": "314134",
+//         "IBAN": "314134",
+//         "BIC": "314134",
+//         "Verified": true
+//       },
+//       {
+//         "Priority": "Alternative",
+//         "PaymentMethod": "BankGiro",
+//         "BankgiroNo": "123-1234",
+//         "PlusgiroNo": "314134",
+//         "ClearingNo": "314134",
+//         "AccountNo": "314134",
+//         "IBAN": "314134",
+//         "BIC": "true",
+//         "Verified": false
+//       }
+//     ]
+//   },
+//   "Attention": null,
+//   "CareOf": null,
+//   "Address": "The address 1",
+//   "Address2": "Additional address",
+//   "ZipCode": "11175",
+//   "City": "Stockholm",
+//   "CountryCode": "SE",
+//   "Phone": "070-5656565",
+//   "VatNumber": "SE551234564701",
+//   "Residence": null,
+//   "ApprovedCompanyTax": true,
+//   "GLN": null,
+//   "CreditorContact": {
+//     "FirstName": "John",
+//     "LastName": "Doe",
+//     "Email": "john.doe@billecta.com",
+//     "Phone": "070123456789"
+//   },
+//   "CreditorClaimsContact": null,
+//   "CreditorSignatoryContact": null,
+// 		"CreditorInvoiceAddress": {
+// 	    "Address": "Rosenstigen",
+// 	    "Address2": null,
+// 	    "ZipCode": "14462",
+// 	    "City": "Ronninge",
+// 	    "CountryCode": "SE",
+// 	    "Email": "acme@billecta.com",
+// 	    "DeliveryMethod": "Email"
+// 	  },
+//   "IsEnabled": true,
+//   "NextInvoiceNumber": "1023",
+//   "LogoURL": null,
+//   "UseCentRounding": false,
+//   "UsesClientFundForInvoicing": false
+// }
+
+
+// axios.put('https://apitest.billecta.com/v1/creditors/creditor', obj1, {headers: headers})
+// 	.then((res) => {
+// 		console.log(res);
+// 	})
+// 	.catch((err) => {
+// 		console.error(err);
+// 	});
+
+axios.post('https://apitest.billecta.com/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers})
+	.then((res) => {
+		console.log(res);
+	})
+	.catch((err) => {
+		console.error(err);
+		// data: { PublicId: '8172318798' }
+		// the id when changing the autogiro in the future
+	});
