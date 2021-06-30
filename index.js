@@ -18,7 +18,11 @@ var creditor_id = process.env.CREDITOR_ID;
 
 // Route configs
 var configUrl = 'https://apitest.billecta.com';
-var apiUrl = '/api/'
+var apiUrl = '/api/';
+
+// Middleware
+app.use(express.urlencoded({extended: true})); 
+app.use(express.json());
 
 // Initiate app
 app.listen(port, () => {
