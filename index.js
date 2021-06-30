@@ -8,20 +8,33 @@ const request = require('request');
 const queryString = require('query-string');
 const axios = require('axios');
 
+// Routes
+const autogiroRoutes = require('./routes/autogiroRoutes');
+
 // Process variables
 var port = process.env.PORT;
 var api_key = process.env.API_KEY;
 var creditor_id = process.env.CREDITOR_ID;
 
+// Route configs
 var configUrl = 'https://apitest.billecta.com';
+var apiUrl = '/api/'
 
+// Initiate app
+app.listen(port, () => {
+	console.log('Listening: ' + port);
+});
+
+// Test route
 app.get('/', (req, res) => {
 	res.send('Hello world');
 });
 
-app.listen(port, () => {
-	console.log('Listening: ' + port);
-});
+// Routes middleware
+app.use(apiUrl + 'autogiro', autogiroRoutes);
+
+
+
 
 
 function sendRequest(url, method) {
@@ -282,12 +295,12 @@ const headers = {
 // 		console.error(err);
 // 	});
 
-axios.post('https://apitest.billecta.com/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers})
-	.then((res) => {
-		console.log(res);
-	})
-	.catch((err) => {
-		console.error(err);
-		// data: { PublicId: '8172318798' }
-		// the id when changing the autogiro in the future
-	});
+// axios.post('https://apitest.billecta.com/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers})
+// 	.then((res) => {
+// 		console.log(res);
+// 	})
+// 	.catch((err) => {
+// 		console.error(err);
+// 		data: { PublicId: '8172318798' }
+// 		the id when changing the autogiro in the future
+// 	});
