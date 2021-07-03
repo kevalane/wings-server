@@ -10,7 +10,8 @@ var bankInfoValidator = Joi.object().keys({
 		.max(12)
 		.required(),
 
-	email: Joi.email()
+	email: Joi.string()
+		.email()
 		.max(150)
 		.required(),
 

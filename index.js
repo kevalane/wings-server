@@ -70,6 +70,8 @@ function sendRequest(url, method) {
 
 // Step 1: make creditor call, get public id 
 // Step 2 start inteval of public id that retrieved
+
+
 // HOW TO RETRIEVE ALL THE DATA
 // var bank = 'SEB';
 // var ssn = '19800113-9297'
