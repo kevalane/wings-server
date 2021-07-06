@@ -3,6 +3,7 @@ const request = require('request');
 
 // Validators
 const getBankInfoValidator = require('../validators/autogiro/getBankInfoValidator');
+const pollBankInfoValidator = require('../validators/autogiro/pollBankInfoValidator');
 
 // Global vars
 var configUrl = 'https://apitest.billecta.com';
@@ -14,7 +15,7 @@ var headers = {
 	'Content-Length': 0
 }
 
-
+// Initiate retrieval of bank info
 const autogiro_getBankInfo = (req, res) => {
 
 	var rawData = {
@@ -49,6 +50,50 @@ const autogiro_getBankInfo = (req, res) => {
 	}
 }
 
+// Polling during the users authentication process
+const autogiro_pollBankInfo = (req, res) => {
+
+	var rawData = {
+		publicId: req.body.publicId
+	}
+
+	const validation = pollBankInfoValidator.validate(rawData);
+
+	if (validation.error) {
+		return res.send({err: validation.error.details[0].message});
+	} else {
+		setInterval(function () {
+			request({
+				uri: configUrl + '/v1/bank/accounts/' + validation.value.publicId + '',
+				method: 'GET',
+				headers: headers
+			}, function (err, response, body) {
+				if (err) {
+					clearInterval();
+					return res.send({err: err.message});
+				} else {
+					var result = JSON.parse(body);
+					console.log(result);
+					console.log(result['Status']);
+
+					if (result['Status'] == 'Waiting') {
+						console.log('Waiting');
+
+						// Send qr
+						if (result['QR']) {
+							console.log(result['QR']);
+						}
+					} else if (result['Status'] == 'Success') {
+						return res.send({success: true, accounts: result['AccountNumbers']});
+					}
+				}
+			});
+		}, 1000);
+	}
+
+}
+
 module.exports = {
-	autogiro_getBankInfo
+	autogiro_getBankInfo,
+	autogiro_pollBankInfo
 }

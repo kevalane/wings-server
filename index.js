@@ -75,27 +75,18 @@ function sendRequest(url, method) {
 // HOW TO RETRIEVE ALL THE DATA
 // var bank = 'SEB';
 // var ssn = '19800113-9297'
-// request({
-// 	uri: configUrl + '/v1/bank/accounts/' + creditor_id + '?bank=' + bank + '&ssn=' + ssn + '',
-// 	method: 'POST',
-// 	headers: {
-// 		Authorization: 'Basic ' + api_key,
-// 		'Accept': 'application/json',
-// 		'Content-Length': 0
-// 	}
-// },
-// function (err, response, body) {
-// 	var res = JSON.parse(body);
-// 	console.log(res);
-// 	console.log(res.PublicId);
-
 // 	var public_id = res.PublicId;
+
 
 // 	setInterval(function () {
 // 		sendRequest(configUrl + '/v1/bank/accounts/' + public_id + '', 'GET');
 // 	}, 1000)
 // }
 // )
+
+
+
+
 // obj = {
 //   "CreditorPublicId": '4b101fd3-91eb-4bd6-adac-c314c293c781',
 //   "DebtorExternalId": null,
