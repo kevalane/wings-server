@@ -62,14 +62,14 @@ const autogiro_pollBankInfo = (req, res) => {
 	if (validation.error) {
 		return res.send({err: validation.error.details[0].message});
 	} else {
-		setInterval(function () {
+		var interval = setInterval(function () {
 			request({
 				uri: configUrl + '/v1/bank/accounts/' + validation.value.publicId + '',
 				method: 'GET',
 				headers: headers
 			}, function (err, response, body) {
 				if (err) {
-					clearInterval();
+					clearInterval(interval);
 					return res.send({err: err.message});
 				} else {
 					var result = JSON.parse(body);
@@ -79,18 +79,24 @@ const autogiro_pollBankInfo = (req, res) => {
 					if (result['Status'] == 'Waiting') {
 						console.log('Waiting');
 
-						// Send qr
+						// Send qr, needs to be implemented
 						if (result['QR']) {
 							console.log(result['QR']);
 						}
 					} else if (result['Status'] == 'Success') {
+						clearInterval(interval);
 						return res.send({success: true, accounts: result['AccountNumbers']});
+					} else if (result['Status'] == 'Failed') {
+						clearInterval(interval);
+						return res.send({err: 'Authentication failed.'});
+					} else {
+						clearInterval(interval);
+						return res.send({err: 'Unknown error with authentication.'});
 					}
 				}
 			});
 		}, 1000);
 	}
-
 }
 
 module.exports = {
