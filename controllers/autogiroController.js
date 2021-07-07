@@ -1,9 +1,11 @@
 // Imports
 const request = require('request');
+const axios = require('axios');
 
 // Validators
 const getBankInfoValidator = require('../validators/autogiro/getBankInfoValidator');
 const pollBankInfoValidator = require('../validators/autogiro/pollBankInfoValidator');
+const startAutogiroValidator = require('../validators/autogiro/startAutogiroValidator')
 
 // Global vars
 var configUrl = 'https://apitest.billecta.com';
@@ -96,8 +98,43 @@ const autogiro_pollBankInfo = (req, res) => {
 	}
 }
 
+// Finalize, and actually start the autogiro
 const autogiro_startAutogiro = (req, res) => {
 
+	var rawData = {
+		email: req.body.email,
+		ssn: req.body.ssn,
+		name: req.body.name,
+		clearingNumber: req.body.clearingNumber,
+		accountNumber: req.body.accountNumber,
+		bank: req.body.bank,
+		amount: req.body.amount
+	}
+
+	const validation = startAutogiroValidator.validate(rawData);
+
+	if (validation.error) {
+		return res.send({err: validation.error.details[0].message});
+	} else {
+		var obj = {
+			"CreditorPublicId": creditor_id,
+			"Email": validation.value.email,
+			"SSN": validation.value.ssn,
+			"Name": validation.value.name,
+			"ClearingNumber": validation.value.clearingNumber,
+			"AccountNumber": validation.value.accountNumber,
+			"Bank": validation.value.bank,
+			"Amount": validation.value.amount,
+			"WithdrawalDay": 27
+		}
+		axios.post(configUrl + '/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers})
+		.then((result) => {
+			return res.send({success: true, data: result['data']});
+		})
+		.catch((err) => {
+			return res.send({err: err.message});
+		})
+	}
 }
 
 module.exports = {
