@@ -77,7 +77,8 @@ const autogiro_pollBankInfo = (req, res) => {
 					if (result['Status'] == 'Waiting') {
 						// Send qr, needs to be implemented
 						if (result['QR']) {
-							console.log(result['QR']);
+							clearInterval(interval);
+							return res.send({qr: result['QR'], publicId: validation.value.publicId, status: 'Waiting'});
 						}
 					} else if (result['Status'] == 'Success') {
 						clearInterval(interval);
@@ -95,7 +96,12 @@ const autogiro_pollBankInfo = (req, res) => {
 	}
 }
 
+const autogiro_startAutogiro = (req, res) => {
+
+}
+
 module.exports = {
 	autogiro_getBankInfo,
-	autogiro_pollBankInfo
+	autogiro_pollBankInfo,
+	autogiro_startAutogiro
 }
