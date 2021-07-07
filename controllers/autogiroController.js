@@ -74,11 +74,7 @@ const autogiro_pollBankInfo = (req, res) => {
 				} else {
 					var result = JSON.parse(body);
 					console.log(result);
-					console.log(result['Status']);
-
 					if (result['Status'] == 'Waiting') {
-						console.log('Waiting');
-
 						// Send qr, needs to be implemented
 						if (result['QR']) {
 							console.log(result['QR']);
@@ -88,10 +84,10 @@ const autogiro_pollBankInfo = (req, res) => {
 						return res.send({success: true, accounts: result['AccountNumbers']});
 					} else if (result['Status'] == 'Failed') {
 						clearInterval(interval);
-						return res.send({err: 'Authentication failed.'});
+						return res.send({err: 'Legitimering via mobilt BankID misslyckades. Vänligen försök igen.'});
 					} else {
 						clearInterval(interval);
-						return res.send({err: 'Unknown error with authentication.'});
+						return res.send({err: 'Ett okänt fel vid legitimering inträffade.'});
 					}
 				}
 			});

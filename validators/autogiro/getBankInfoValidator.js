@@ -7,7 +7,7 @@ var bankInfoValidator = Joi.object().keys({
 
 	ssn: Joi.string()
 		.min(12)
-		.max(12)
+		.max(13)
 		.required(),
 
 	email: Joi.string()
