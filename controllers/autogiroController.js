@@ -5,7 +5,7 @@ const axios = require('axios');
 // Validators
 const getBankInfoValidator = require('../validators/autogiro/getBankInfoValidator');
 const pollBankInfoValidator = require('../validators/autogiro/pollBankInfoValidator');
-const startAutogiroValidator = require('../validators/autogiro/startAutogiroValidator')
+const startAutogiroValidator = require('../validators/autogiro/startAutogiroValidator');
 
 // Global vars
 var configUrl = 'https://apitest.billecta.com';
