@@ -1,11 +1,15 @@
 // Imports
 const request = require('request');
 const axios = require('axios');
+const mongoose = require('mongoose');
 
 // Validators
 const getBankInfoValidator = require('../validators/autogiro/getBankInfoValidator');
 const pollBankInfoValidator = require('../validators/autogiro/pollBankInfoValidator');
 const startAutogiroValidator = require('../validators/autogiro/startAutogiroValidator');
+
+// Models
+const User = require('../models/user.js');
 
 // Global vars
 var configUrl = 'https://apitest.billecta.com';
@@ -129,7 +133,42 @@ const autogiro_startAutogiro = (req, res) => {
 		}
 		axios.post(configUrl + '/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers})
 		.then((result) => {
-			return res.send({success: true, data: result['data']});
+			User.countDocuments({}, function (err, count) {
+				if (err) {
+					console.log({err: 'Error creating mongoose model with user', object: obj});
+					if (result['data']['PublicId']) {
+						return res.send({success: true, data: result['data']});
+					} else {
+						return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
+					}
+				} else {
+					var userObj = {
+						id: count,
+						ssn: validation.value.ssn,
+						email: validation.value.email,
+						name: validation.value.name,
+						clearingNumber: validation.value.clearingNumber,
+						accountNumber: validation.value.accountNumber,
+						bank: validation.value.bank,
+						amount: validation.value.amount,
+						public_id: result['data']['PublicId'],
+						creditor_id: process.env.CREDITOR_ID
+					}
+
+					User.create(userObj, (err, user) => {
+						if (err) {
+							console.log({err: 'Error creating mongoose model with user', object: obj});
+							if (result['data']['PublicId']) {
+								return res.send({success: true, data: result['data']});
+							} else {
+								return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
+							}
+						} else {
+							return res.send({success: true, data: result['data']});
+						}
+					});
+				}
+			});
 		})
 		.catch((err) => {
 			return res.send({err: err.message});
