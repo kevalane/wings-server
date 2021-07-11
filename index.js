@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv').config();
 const request = require('request');
+const mongoose = require('mongoose');
 
 // Maybe not necessary
 const queryString = require('query-string');
@@ -20,6 +21,22 @@ var creditor_id = process.env.CREDITOR_ID;
 var configUrl = 'https://apitest.billecta.com';
 var apiUrl = '/api/';
 
+// Mongodb configuration
+mongooseOptions = {
+	'user': 'admin',
+	'pass': process.env.MONGO_PASSWORD,
+	'auth': {
+		'authSource': 'admin'
+	},
+	'keepAlive': true,
+	'useNewUrlParser': true,
+	'useFindAndModify': false,
+	'useCreateIndex': true,
+	'useUnifiedTopology': true
+}
+var mongooseConnectionString = 'mongodb://localhost:27017/wingsDB?authSource=admin';
+mongoose.connect(mongooseConnectionString, mongooseOptions);
+
 // Middleware
 app.use(express.urlencoded({extended: true})); 
 app.use(express.json());
@@ -36,6 +53,11 @@ app.get('/', (req, res) => {
 
 // Routes middleware
 app.use(apiUrl + 'autogiro', autogiroRoutes);
+
+
+
+
+
 
 
 
