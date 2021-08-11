@@ -35,7 +35,13 @@ mongooseOptions = {
 	'useUnifiedTopology': true
 }
 var mongooseConnectionString = 'mongodb://localhost:27017/wingsDB?authSource=admin';
-mongoose.connect(mongooseConnectionString, mongooseOptions);
+mongoose.connect(mongooseConnectionString, mongooseOptions)
+	.then(data => {
+		console.log('Successfully connected to MongoDB.');
+	})
+	.catch(err => {
+		console.log('There was an error connecting to MongoDB. Message: ' + err.message);
+	});
 
 // Middleware
 app.use(express.urlencoded({extended: true})); 
