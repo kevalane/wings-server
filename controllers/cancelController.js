@@ -4,7 +4,10 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 
 // Validators
-const cancelAutogiroController = require('../validators/cancel/cancelAutogiroValidator');
+const cancelAutogiroValidator = require('../validators/cancel/cancelAutogiroValidator');
+
+// Models
+const User = require('../models/user.js');
 
 // Global vars
 var configUrl = 'https://apitest.billecta.com';
@@ -38,8 +41,8 @@ const cancel_cancelAutogiro = (req, res) => {
 				if (err) {
 					return res.status(400).send({err: err.message});
 				} else {
-					var result = JSON.parse(body);
-					console.log(result);
+					// var result = JSON.parse(body);
+					console.log(body);
 				}
 			});
 		}).catch(err => {
@@ -50,5 +53,5 @@ const cancel_cancelAutogiro = (req, res) => {
 }
 
 module.exports = {
-	cancel_getTest
+	cancel_cancelAutogiro
 }

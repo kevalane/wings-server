@@ -68,37 +68,40 @@ const autogiro_pollBankInfo = (req, res) => {
 	if (validation.error) {
 		return res.send({err: validation.error.details[0].message});
 	} else {
-		var interval = setInterval(function () {
+		// var interval = setInterval(function () {
 			request({
 				uri: configUrl + '/v1/bank/accounts/' + validation.value.publicId + '',
 				method: 'GET',
 				headers: headers
 			}, function (err, response, body) {
 				if (err) {
-					clearInterval(interval);
+					// clearInterval(interval);
 					return res.send({err: err.message});
 				} else {
 					var result = JSON.parse(body);
+					console.log('THIS IS THE RESULT')
 					console.log(result);
 					if (result['Status'] == 'Waiting') {
 						// Send qr, needs to be implemented
 						if (result['QR']) {
-							clearInterval(interval);
+							// clearInterval(interval);
 							return res.send({qr: result['QR'], publicId: validation.value.publicId, status: 'Waiting'});
+						} else {
+							return res.send({status: 'Waiting', publicId: validation.value.publicId});
 						}
 					} else if (result['Status'] == 'Success') {
-						clearInterval(interval);
+						// clearInterval(interval);
 						return res.send({success: true, accounts: result['AccountNumbers']});
 					} else if (result['Status'] == 'Failed') {
-						clearInterval(interval);
+						// clearInterval(interval);
 						return res.send({err: 'Legitimering via mobilt BankID misslyckades. Vänligen försök igen.'});
 					} else {
-						clearInterval(interval);
+						// clearInterval(interval);
 						return res.send({err: 'Ett okänt fel vid legitimering inträffade.'});
 					}
 				}
 			});
-		}, 1000);
+		// }, 1000);
 	}
 }
 
@@ -142,6 +145,10 @@ const autogiro_startAutogiro = (req, res) => {
 						return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
 					}
 				} else {
+					console.log('*************');
+					console.log(result);
+					console.log('*************');
+
 					var userObj = {
 						id: count,
 						ssn: validation.value.ssn,
