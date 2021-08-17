@@ -14,8 +14,12 @@ var headers = {
 }
 
 // Test route
-const cancel_getTest = (req, res) => {
-	res.status(200).send({msg: 'Hello world'});
+const cancel_cancelAutogiro = (req, res) => {
+	var rawData = {
+		email: req.body.email
+	}
+
+	
 }
 
 module.exports = {
