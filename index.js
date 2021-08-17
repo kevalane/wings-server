@@ -1,3 +1,10 @@
+// Permanent marker heading 1
+// Raleway brödtext
+// h4 font-weight 500
+// brördtext 400
+
+
+
 // Requires
 const express = require('express');
 const app = express();
@@ -11,6 +18,7 @@ const axios = require('axios');
 
 // Routes
 const autogiroRoutes = require('./routes/autogiroRoutes');
+const cancelRoutes = require('./routes/cancelRoutes');
 
 // Process variables
 var port = process.env.PORT;
@@ -59,6 +67,7 @@ app.get('/', (req, res) => {
 
 // Routes middleware
 app.use(apiUrl + 'autogiro', autogiroRoutes);
+app.use(apiUrl + 'cancel', cancelRoutes);
 
 
 

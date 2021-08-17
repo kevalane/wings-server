@@ -1,6 +1,6 @@
 // Imports
 const express = require('express');
-const swishController = require('../controllers/swishController');
+const cancelController = require('../controllers/cancelController');
 const router = express.Router();
 
 // Routes
