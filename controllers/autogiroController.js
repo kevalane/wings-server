@@ -165,6 +165,7 @@ const autogiro_startAutogiro = (req, res) => {
 					User.create(userObj, (err, user) => {
 						if (err) {
 							console.log({err: 'Error creating mongoose model with user', object: obj});
+							// THIS IS A HUGE TODO. CREATING AN AUTOGIRO BUT NOT SAVING TO DATABASE HMMMM.
 							if (result['data']['PublicId']) {
 								return res.send({success: true, data: result['data']});
 							} else {
