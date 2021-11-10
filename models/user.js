@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 var UserSchema = new mongoose.Schema({
 	id: {
@@ -51,6 +52,17 @@ var UserSchema = new mongoose.Schema({
 		unique: false,
 		required: true
 	}
+});
+
+UserSchema.pre('save', function (next) {
+	let user = this;
+	bcrypt.hash(user.ssn, 10, (err, hash) => {
+		if (err) {
+			return next(err);
+		}
+		user.ssn = hash;
+		next();
+	});
 });
 
 var User = mongoose.model('User', UserSchema);
