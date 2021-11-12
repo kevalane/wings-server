@@ -2,6 +2,7 @@
 const request = require('request');
 const axios = require('axios');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 // Validators
 const cancelAutogiroValidator = require('../validators/cancel/cancelAutogiroValidator');
@@ -32,13 +33,35 @@ const cancel_cancelAutogiro = (req, res) => {
 		return res.status(400).send({err: validation.error.details[0].message});
 	} else {
 		// Successful validation, let's get the id
-		User.find({email: validation.value.email}).then(users => {
-			// They might have multiple autogiros, let's let them decide which to cancel
-			return res.status(200).send({success: true, users: users});
-			// Check if the ssn is correct
+		User.find({email: validation.value.email
+		}).then(users => {
+			if (!users) {
+				return res.status(400).send({err: 'Kunde inte hitta något autogiro med angiven email.'});
+			} else {
+				// Check ssn of the first one, they should have the same on all..
+				bcrypt.compare(validation.value.ssn, users[0].ssn, (err, result) => {
+					if (err) {
+						console.log(err);
+						return res.status(400).send({err: 'Kunde inte hitta något autogiro med ditt personnummer. Kontakta oss.'});
+					} else {
+						if (result) {
+							// It's correct. send all autogiros
+							console.log(result);
+							return res.status(200).send({success: true, users: users});
+						} else {
+							console.log(result);
+							return res.status(400).send({err: 'Kunde inte hitta något autogiro med ditt personnummer. Kontakta oss.'});
+						}
+					}
+				});
+			}
+		}).catch(err => {
+			return res.status(400).send({err: err.message});
+		});
+	}
+}
 
-
-			// request({
+// request({
 			// 	uri: configUrl + '/v1/contractinvoice/pause/' + user['public_id'],
 			// 	method: 'PUT',
 			// 	headers: headers
@@ -50,12 +73,6 @@ const cancel_cancelAutogiro = (req, res) => {
 			// 		console.log(body);
 			// 	}
 			// });
-		}).catch(err => {
-			return res.status(400).send({err: err.message});
-		});
-	}
-
-}
 
 module.exports = {
 	cancel_cancelAutogiro
