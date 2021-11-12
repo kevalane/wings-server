@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 
 // Validators
 const cancelAutogiroValidator = require('../validators/cancel/cancelAutogiroValidator');
+const cancelSpecificValidator = require('../validators/cancel/cancelSpecificValidator');
 
 // Models
 const User = require('../models/user.js');
@@ -67,6 +68,7 @@ const cancel_cancelAutogiro = (req, res) => {
 
 const cancel_cancelSpecificAutogiro = (req, res) => {
 	console.log(req.body);
+	res.status(200).send({msg: 'Hello world'});
 }
 
 // request({
