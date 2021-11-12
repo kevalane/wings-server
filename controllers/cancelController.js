@@ -92,7 +92,7 @@ const cancel_cancelSpecificAutogiro = (req, res) => {
 						// It's correct, here we should delete it
 						// return res.status(200).send({success: true, users: users});
 						console.log('here');
-						request({uri: configUrl + '/v1/contractinvoice/action/' + user['public_id'], method: 'DELETE', headers: headers}, (err, response, body) => {
+						request({uri: configUrl + '/v1/contractinvoice/pause/' + user['public_id'], method: 'PUT', headers: headers}, (err, response, body) => {
 							console.log(body);
 							console.log(err);
 							console.log(response);
