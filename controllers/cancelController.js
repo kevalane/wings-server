@@ -65,6 +65,10 @@ const cancel_cancelAutogiro = (req, res) => {
 	}
 }
 
+const cancel_cancelSpecificAutogiro = (req, res) => {
+	console.log(req.body);
+}
+
 // request({
 			// 	uri: configUrl + '/v1/contractinvoice/pause/' + user['public_id'],
 			// 	method: 'PUT',
@@ -79,5 +83,6 @@ const cancel_cancelAutogiro = (req, res) => {
 			// });
 
 module.exports = {
-	cancel_cancelAutogiro
+	cancel_cancelAutogiro,
+	cancel_cancelSpecificAutogiro
 }
