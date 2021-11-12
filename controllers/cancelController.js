@@ -67,8 +67,48 @@ const cancel_cancelAutogiro = (req, res) => {
 }
 
 const cancel_cancelSpecificAutogiro = (req, res) => {
-	console.log(req.body);
-	res.status(200).send({msg: 'Hello world'});
+	let rawData = {
+		email: req.body.email,
+		ssn: req.body.ssn,
+		publicId: req.body.publicId
+	}
+
+	const validation = cancelSpecificValidator.validate(rawData);
+
+	if (validation.error) {
+		return res.status(400).send({err: validation.error.details[0].message});
+	} else {
+		// Find the specific autogiro
+		User.findOne({public_id: validation.value.publicId}).then(user => {
+			// Check ssn again
+			let raw = validation.value.ssn.toString();
+			changed = raw.replace('-', '');
+
+			bcrypt.compare(changed, user.ssn, (err, result) => {
+				if (err) {
+					return res.status(400).send({err: 'Kunde inte hitta något autogiro med ditt personnummer. Kontakta oss.'});
+				} else {
+					if (result) {
+						// It's correct, here we should delete it
+						// return res.status(200).send({success: true, users: users});
+						console.log('here');
+						request({uri: configUrl + '/v1/contractinvoice/action/' + user['public_id'], method: 'DELETE', headers: headers}, (err, response, body) => {
+							console.log(body);
+							console.log(err);
+							console.log(response);
+						});
+					} else {
+						return res.status(400).send({err: 'Kunde inte hitta något autogiro med ditt personnummer. Kontakta oss.'});
+					}
+				}
+			});
+		})
+		.catch(err => {
+			return res.status(400).send({err: 'Vi lyckades inte hitta autogirot. Vänligen kontakta oss.'});
+		})
+	}
+	// console.log(req.body);
+	// res.status(200).send({msg: 'Hello world'});
 }
 
 // request({
