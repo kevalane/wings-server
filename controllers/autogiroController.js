@@ -134,6 +134,9 @@ const autogiro_startAutogiro = (req, res) => {
 			"Amount": validation.value.amount,
 			"WithdrawalDay": 27
 		}
+		// 
+		// TODO CHANGE SO THE SSN IS WITHOUT DASH
+		// 
 		axios.post(configUrl + '/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers})
 		.then((result) => {
 			User.countDocuments({}, function (err, count) {

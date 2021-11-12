@@ -38,8 +38,12 @@ const cancel_cancelAutogiro = (req, res) => {
 			if (!users) {
 				return res.status(400).send({err: 'Kunde inte hitta något autogiro med angiven email.'});
 			} else {
+				// Fix ssn so its without the dash
+				let raw = validation.value.ssn.toString();
+				changed = raw.replace('-', '');
+
 				// Check ssn of the first one, they should have the same on all..
-				bcrypt.compare(validation.value.ssn, users[0].ssn, (err, result) => {
+				bcrypt.compare(changed, users[0].ssn, (err, result) => {
 					if (err) {
 						console.log(err);
 						return res.status(400).send({err: 'Kunde inte hitta något autogiro med ditt personnummer. Kontakta oss.'});
