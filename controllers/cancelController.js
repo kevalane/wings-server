@@ -32,20 +32,24 @@ const cancel_cancelAutogiro = (req, res) => {
 		return res.status(400).send({err: validation.error.details[0].message});
 	} else {
 		// Successful validation, let's get the id
-		User.findOne({email: validation.value.email}).then(user => {
-			console.log(user);
-			request({
-				uri: configUrl + '/v1/contractinvoice/pause/' + user['public_id'],
-				method: 'PUT',
-				headers: headers
-			}, (err, response, body) => {
-				if (err) {
-					return res.status(400).send({err: err.message});
-				} else {
-					// var result = JSON.parse(body);
-					console.log(body);
-				}
-			});
+		User.find({email: validation.value.email}).then(users => {
+			// They might have multiple autogiros, let's let them decide which to cancel
+			return res.status(200).send({success: true, users: users});
+			// Check if the ssn is correct
+
+
+			// request({
+			// 	uri: configUrl + '/v1/contractinvoice/pause/' + user['public_id'],
+			// 	method: 'PUT',
+			// 	headers: headers
+			// }, (err, response, body) => {
+			// 	if (err) {
+			// 		return res.status(400).send({err: err.message});
+			// 	} else {
+			// 		// var result = JSON.parse(body);
+			// 		console.log(body);
+			// 	}
+			// });
 		}).catch(err => {
 			return res.status(400).send({err: err.message});
 		});
