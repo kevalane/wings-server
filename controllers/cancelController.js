@@ -22,7 +22,8 @@ var headers = {
 // Test route
 const cancel_cancelAutogiro = (req, res) => {
 	var rawData = {
-		email: req.body.email
+		email: req.body.email,
+		ssn: req.body.ssn
 	}
 
 	const validation = cancelAutogiroValidator.validate(rawData);
