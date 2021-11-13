@@ -91,11 +91,12 @@ const cancel_cancelSpecificAutogiro = (req, res) => {
 					if (result) {
 						// It's correct, here we should delete it
 						// return res.status(200).send({success: true, users: users});
-						console.log('here');
 						request({uri: configUrl + '/v1/contractinvoice/pause/' + user['public_id'], method: 'PUT', headers: headers}, (err, response, body) => {
-							console.log(body);
-							console.log(err);
-							console.log(response);
+							if (err) {
+								return res.status(400).send({err: err.message});
+							} else {
+								return res.status(200).send({success: true, msg: 'Autogirot är nu uppsagt.'})
+							}
 						});
 					} else {
 						return res.status(400).send({err: 'Kunde inte hitta något autogiro med ditt personnummer. Kontakta oss.'});
@@ -105,24 +106,9 @@ const cancel_cancelSpecificAutogiro = (req, res) => {
 		})
 		.catch(err => {
 			return res.status(400).send({err: 'Vi lyckades inte hitta autogirot. Vänligen kontakta oss.'});
-		})
+		});
 	}
-	// console.log(req.body);
-	// res.status(200).send({msg: 'Hello world'});
 }
-
-// request({
-			// 	uri: configUrl + '/v1/contractinvoice/pause/' + user['public_id'],
-			// 	method: 'PUT',
-			// 	headers: headers
-			// }, (err, response, body) => {
-			// 	if (err) {
-			// 		return res.status(400).send({err: err.message});
-			// 	} else {
-			// 		// var result = JSON.parse(body);
-			// 		console.log(body);
-			// 	}
-			// });
 
 module.exports = {
 	cancel_cancelAutogiro,
