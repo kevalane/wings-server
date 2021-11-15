@@ -28,6 +28,8 @@ const cancel_cancelAutogiro = (req, res) => {
 		ssn: req.body.ssn
 	}
 
+	console.log(rawData);
+
 	const validation = cancelAutogiroValidator.validate(rawData);
 
 	if (validation.error) {
@@ -36,7 +38,8 @@ const cancel_cancelAutogiro = (req, res) => {
 		// Successful validation, let's get the id
 		User.find({email: validation.value.email
 		}).then(users => {
-			if (!users) {
+			console.log(users);
+			if (users.length == 0) {
 				return res.status(400).send({err: 'Kunde inte hitta något autogiro med angiven email.'});
 			} else {
 				// Fix ssn so its without the dash
