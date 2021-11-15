@@ -152,9 +152,13 @@ const autogiro_startAutogiro = (req, res) => {
 					console.log(result);
 					console.log('*************');
 
+					// Fix ssn
+					let raw = validation.value.ssn.toString();
+					changed = raw.replace('-', '');
+
 					var userObj = {
 						id: count,
-						ssn: validation.value.ssn,
+						ssn: changed,
 						email: validation.value.email,
 						name: validation.value.name,
 						clearingNumber: validation.value.clearingNumber,

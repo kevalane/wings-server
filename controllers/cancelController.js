@@ -93,7 +93,6 @@ const cancel_cancelSpecificAutogiro = (req, res) => {
 				} else {
 					if (result) {
 						// It's correct, here we should delete it
-						// return res.status(200).send({success: true, users: users});
 						request({uri: configUrl + '/v1/contractinvoice/pause/' + user['public_id'], method: 'PUT', headers: headers}, (err, response, body) => {
 							if (err) {
 								return res.status(400).send({err: err.message});
