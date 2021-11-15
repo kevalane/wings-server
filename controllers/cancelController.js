@@ -95,7 +95,11 @@ const cancel_cancelSpecificAutogiro = (req, res) => {
 							if (err) {
 								return res.status(400).send({err: err.message});
 							} else {
-								return res.status(200).send({success: true, msg: 'Autogirot är nu uppsagt.'})
+								User.deleteOne({public_id: validation.value.publicId}).then(response => {
+									return res.status(200).send({success: true, msg: 'Autogirot är nu uppsagt.'})
+								}).catch(err => {
+									return res.status(400).send({err: 'Autogiro pausat men kvar i databasen. Vänligen kontakta oss.'});
+								})
 							}
 						});
 					} else {
