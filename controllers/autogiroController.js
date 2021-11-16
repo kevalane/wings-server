@@ -134,19 +134,20 @@ const autogiro_startAutogiro = (req, res) => {
 			"Amount": validation.value.amount,
 			"WithdrawalDay": 27
 		}
-		// 
-		// TODO CHANGE SO THE SSN IS WITHOUT DASH
-		// 
+
 		axios.post(configUrl + '/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers})
 		.then((result) => {
 			User.countDocuments({}, function (err, count) {
 				if (err) {
-					console.log({err: 'Error creating mongoose model with user', object: obj});
-					if (result['data']['PublicId']) {
-						return res.send({success: true, data: result['data']});
-					} else {
-						return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
-					}
+					// console.log({err: 'Error creating mongoose model with user', object: obj});
+					// if (result['data']['PublicId']) {
+					// 	return res.send({success: true, data: result['data']});
+					// } else {
+					// 	return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
+					// }
+					request({uri: configUrl + '/v1/contractinvoice/pause/' + result['data']['PublicId'], method: 'PUT', headers: headers}, (err, response, body) => {
+								return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
+							});
 				} else {
 					console.log('*************');
 					console.log(result);
@@ -171,13 +172,18 @@ const autogiro_startAutogiro = (req, res) => {
 
 					User.create(userObj, (err, user) => {
 						if (err) {
-							console.log({err: 'Error creating mongoose model with user', object: obj});
+							// console.log({err: 'Error creating mongoose model with user', object: obj});
 							// THIS IS A HUGE TODO. CREATING AN AUTOGIRO BUT NOT SAVING TO DATABASE HMMMM.
-							if (result['data']['PublicId']) {
-								return res.send({success: true, data: result['data']});
-							} else {
+							// if (result['data']['PublicId']) {
+							// 	return res.send({success: true, data: result['data']});
+							// } else {
+							// 	return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
+							// }
+
+							// Remove the created autogiro
+							request({uri: configUrl + '/v1/contractinvoice/pause/' + result['data']['PublicId'], method: 'PUT', headers: headers}, (err, response, body) => {
 								return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
-							}
+							});
 						} else {
 							return res.send({success: true, data: result['data']});
 						}
