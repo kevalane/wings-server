@@ -68,40 +68,36 @@ const autogiro_pollBankInfo = (req, res) => {
 	if (validation.error) {
 		return res.send({err: validation.error.details[0].message});
 	} else {
-		// var interval = setInterval(function () {
-			request({
-				uri: configUrl + '/v1/bank/accounts/' + validation.value.publicId + '',
-				method: 'GET',
-				headers: headers
-			}, function (err, response, body) {
-				if (err) {
-					// clearInterval(interval);
-					return res.send({err: err.message});
-				} else {
-					var result = JSON.parse(body);
-					console.log('THIS IS THE RESULT')
-					console.log(result);
-					if (result['Status'] == 'Waiting') {
-						// Send qr, needs to be implemented
-						if (result['QR']) {
-							// clearInterval(interval);
-							return res.send({qr: result['QR'], publicId: validation.value.publicId, status: 'Waiting'});
-						} else {
-							return res.send({status: 'Waiting', publicId: validation.value.publicId});
-						}
-					} else if (result['Status'] == 'Success') {
+		request({
+			uri: configUrl + '/v1/bank/accounts/' + validation.value.publicId + '',
+			method: 'GET',
+			headers: headers
+		}, function (err, response, body) {
+			if (err) {
+				// clearInterval(interval);
+				return res.send({err: err.message});
+			} else {
+				var result = JSON.parse(body);
+				if (result['Status'] == 'Waiting') {
+					// Send qr, needs to be implemented
+					if (result['QR']) {
 						// clearInterval(interval);
-						return res.send({success: true, accounts: result['AccountNumbers']});
-					} else if (result['Status'] == 'Failed') {
-						// clearInterval(interval);
-						return res.send({err: 'Legitimering via mobilt BankID misslyckades. Vänligen försök igen.'});
+						return res.send({qr: result['QR'], publicId: validation.value.publicId, status: 'Waiting'});
 					} else {
-						// clearInterval(interval);
-						return res.send({err: 'Ett okänt fel vid legitimering inträffade.'});
+						return res.send({status: 'Waiting', publicId: validation.value.publicId});
 					}
+				} else if (result['Status'] == 'Success') {
+					// clearInterval(interval);
+					return res.send({success: true, accounts: result['AccountNumbers']});
+				} else if (result['Status'] == 'Failed') {
+					// clearInterval(interval);
+					return res.send({err: 'Legitimering via mobilt BankID misslyckades. Vänligen försök igen.'});
+				} else {
+					// clearInterval(interval);
+					return res.send({err: 'Ett okänt fel vid legitimering inträffade.'});
 				}
-			});
-		// }, 1000);
+			}
+		});
 	}
 }
 
@@ -174,51 +170,6 @@ const autogiro_startAutogiro = (req, res) => {
 		}).catch((err) => {
 			return res.status(400).send({err: err.message});
 		});
-
-
-
-		// axios.post(configUrl + '/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers})
-		// .then((result) => {
-		// 	User.countDocuments({}, function (err, count) {
-		// 		if (err) {
-		// 			return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
-		// 		} else {
-		// 			console.log('*************');
-		// 			console.log(result);
-		// 			console.log('*************');
-
-		// 			// Fix ssn
-		// 			let raw = validation.value.ssn.toString();
-		// 			changed = raw.replace('-', '');
-
-		// 			var userObj = {
-		// 				id: count,
-		// 				ssn: changed,
-		// 				email: validation.value.email,
-		// 				name: validation.value.name,
-		// 				clearingNumber: validation.value.clearingNumber,
-		// 				accountNumber: validation.value.accountNumber,
-		// 				bank: validation.value.bank,
-		// 				amount: validation.value.amount,
-		// 				public_id: result['data']['PublicId'],
-		// 				creditor_id: process.env.CREDITOR_ID
-		// 			}
-
-		// 			User.create(userObj, (err, user) => {
-		// 				if (err) {
-		// 					request({uri: configUrl + '/v1/contractinvoice/pause/' + result['data']['PublicId'], method: 'PUT', headers: headers}, (err, response, body) => {
-		// 						return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
-		// 					});
-		// 				} else {
-		// 					return res.send({success: true, data: result['data']});
-		// 				}
-		// 			});
-		// 		}
-		// 	});
-		// })
-		// .catch((err) => {
-		// 	return res.send({err: err.message});
-		// })
 	}
 }
 
