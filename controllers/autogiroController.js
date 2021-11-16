@@ -135,65 +135,90 @@ const autogiro_startAutogiro = (req, res) => {
 			"WithdrawalDay": 27
 		}
 
-		axios.post(configUrl + '/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers})
-		.then((result) => {
-			User.countDocuments({}, function (err, count) {
-				if (err) {
-					// console.log({err: 'Error creating mongoose model with user', object: obj});
-					// if (result['data']['PublicId']) {
-					// 	return res.send({success: true, data: result['data']});
-					// } else {
-					// 	return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
-					// }
-					request({uri: configUrl + '/v1/contractinvoice/pause/' + result['data']['PublicId'], method: 'PUT', headers: headers}, (err, response, body) => {
-								return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
-							});
-				} else {
-					console.log('*************');
-					console.log(result);
-					console.log('*************');
-
-					// Fix ssn
-					let raw = validation.value.ssn.toString();
-					changed = raw.replace('-', '');
-
-					var userObj = {
-						id: count,
-						ssn: changed,
-						email: validation.value.email,
-						name: validation.value.name,
-						clearingNumber: validation.value.clearingNumber,
-						accountNumber: validation.value.accountNumber,
-						bank: validation.value.bank,
-						amount: validation.value.amount,
-						public_id: result['data']['PublicId'],
-						creditor_id: process.env.CREDITOR_ID
-					}
-
-					User.create(userObj, (err, user) => {
-						if (err) {
-							// console.log({err: 'Error creating mongoose model with user', object: obj});
-							// THIS IS A HUGE TODO. CREATING AN AUTOGIRO BUT NOT SAVING TO DATABASE HMMMM.
-							// if (result['data']['PublicId']) {
-							// 	return res.send({success: true, data: result['data']});
-							// } else {
-							// 	return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
-							// }
-
-							// Remove the created autogiro
-							request({uri: configUrl + '/v1/contractinvoice/pause/' + result['data']['PublicId'], method: 'PUT', headers: headers}, (err, response, body) => {
-								return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
-							});
-						} else {
-							return res.send({success: true, data: result['data']});
-						}
-					});
+		User.countDocuments({}).then(count => {
+			// Fix ssn
+			let raw = validation.value.ssn.toString();
+			changed = raw.replace('-', '');
+			return [
+				axios.post(configUrl + '/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers}), 
+				changed,
+				count
+			];
+		}).then(result => {
+			// Lets resolve the one we need
+			Promise.resolve(result[0]).then(response => {
+				var userObj = {
+					id: result[2],
+					ssn: result[1],
+					email: validation.value.email,
+					name: validation.value.name,
+					clearingNumber: validation.value.clearingNumber,
+					accountNumber: validation.value.accountNumber,
+					bank: validation.value.bank,
+					amount: validation.value.amount,
+					public_id: response['data']['PublicId'],
+					creditor_id: process.env.CREDITOR_ID
 				}
+
+				// Create User
+				User.create(userObj, (err, user) => {
+					if (err) {
+						request({uri: configUrl + '/v1/contractinvoice/pause/' + response['data']['PublicId'], method: 'PUT', headers: headers}, (err, response, body) => {
+							return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
+						});
+					} else {
+						return res.send({success: true, data: result['data']});
+					}
+				});
 			});
-		})
-		.catch((err) => {
-			return res.send({err: err.message});
-		})
+		}).catch((err) => {
+			return res.status(400).send({err: err.message});
+		});
+
+
+
+		// axios.post(configUrl + '/v1/contractinvoice/monthlyrecurringautogiro', obj, {headers: headers})
+		// .then((result) => {
+		// 	User.countDocuments({}, function (err, count) {
+		// 		if (err) {
+		// 			return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
+		// 		} else {
+		// 			console.log('*************');
+		// 			console.log(result);
+		// 			console.log('*************');
+
+		// 			// Fix ssn
+		// 			let raw = validation.value.ssn.toString();
+		// 			changed = raw.replace('-', '');
+
+		// 			var userObj = {
+		// 				id: count,
+		// 				ssn: changed,
+		// 				email: validation.value.email,
+		// 				name: validation.value.name,
+		// 				clearingNumber: validation.value.clearingNumber,
+		// 				accountNumber: validation.value.accountNumber,
+		// 				bank: validation.value.bank,
+		// 				amount: validation.value.amount,
+		// 				public_id: result['data']['PublicId'],
+		// 				creditor_id: process.env.CREDITOR_ID
+		// 			}
+
+		// 			User.create(userObj, (err, user) => {
+		// 				if (err) {
+		// 					request({uri: configUrl + '/v1/contractinvoice/pause/' + result['data']['PublicId'], method: 'PUT', headers: headers}, (err, response, body) => {
+		// 						return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
+		// 					});
+		// 				} else {
+		// 					return res.send({success: true, data: result['data']});
+		// 				}
+		// 			});
+		// 		}
+		// 	});
+		// })
+		// .catch((err) => {
+		// 	return res.send({err: err.message});
+		// })
 	}
 }
 
