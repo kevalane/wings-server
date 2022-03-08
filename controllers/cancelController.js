@@ -12,7 +12,7 @@ const cancelSpecificValidator = require('../validators/cancel/cancelSpecificVali
 const User = require('../models/user.js');
 
 // Global vars
-var configUrl = 'https://apitest.billecta.com';
+var configUrl = 'https://api.billecta.com';
 var creditor_id = process.env.CREDITOR_ID;
 var api_key = process.env.API_KEY;
 var headers = {

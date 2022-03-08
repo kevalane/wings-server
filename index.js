@@ -19,7 +19,7 @@ var api_key = process.env.API_KEY;
 var creditor_id = process.env.CREDITOR_ID;
 
 // Route configs
-var configUrl = 'https://apitest.billecta.com';
+var configUrl = 'https://api.billecta.com';
 var apiUrl = '/api/';
 
 // Mongodb configuration
