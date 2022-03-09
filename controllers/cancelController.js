@@ -37,7 +37,7 @@ const cancel_cancelAutogiro = (req, res) => {
 		return res.status(400).send({err: validation.error.details[0].message});
 	} else {
 		// Successful validation, let's get the id
-		User.find({email: validation.value.email
+		User.find({email: validation.value.email, active: true
 		}).then(users => {
 			console.log(users);
 			if (users.length == 0) {
@@ -100,7 +100,7 @@ const cancel_cancelSpecificAutogiro = (req, res) => {
 								console.log(err);
 								return res.status(400).send({err: err.message});
 							} else {
-								User.deleteOne({public_id: validation.value.publicId}).then(response => {
+								User.updateOne({public_id: validation.value.publicId}, {$set: {active: false}}).then(response => {
 									return res.status(200).send({success: true, msg: 'Autogirot är nu uppsagt.'})
 								}).catch(err => {
 									console.log(err);
