@@ -88,6 +88,7 @@ const autogiro_pollBankInfo = (req, res) => {
 					}
 				} else if (result['Status'] == 'Success') {
 					// clearInterval(interval);
+					console.log(result); // remove here
 					return res.send({success: true, accounts: result['AccountNumbers']});
 				} else if (result['Status'] == 'Failed') {
 					// clearInterval(interval);
@@ -128,7 +129,7 @@ const autogiro_startAutogiro = (req, res) => {
 			"AccountNumber": validation.value.accountNumber,
 			"Bank": validation.value.bank,
 			"Amount": validation.value.amount,
-			"WithdrawalDay": 27
+			"WithdrawalDay": 10
 		}
 
 		User.countDocuments({}).then(count => {
@@ -163,6 +164,10 @@ const autogiro_startAutogiro = (req, res) => {
 							return res.send({err: 'Ett fel inträffade med lägga in data i databas.'});
 						});
 					} else {
+						console.log("*******************");
+						console.log("RESULT::::::");
+						console.log(result);
+						console.log("*******************");
 						return res.send({success: true, data: result['data']});
 					}
 				});
