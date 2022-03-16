@@ -36,7 +36,7 @@ const cancel_cancelAutogiro = (req, res) => {
 		return res.status(400).send({err: validation.error.details[0].message});
 	} else {
 		// Successful validation, let's get the id
-		User.find({email: validation.value.email
+		User.find({email: validation.value.email, active: true
 		}).then(users => {
 			console.log(users);
 			if (users.length == 0) {
@@ -64,6 +64,7 @@ const cancel_cancelAutogiro = (req, res) => {
 				});
 			}
 		}).catch(err => {
+			console.log(err);
 			return res.status(400).send({err: err.message});
 		});
 	}
@@ -89,28 +90,33 @@ const cancel_cancelSpecificAutogiro = (req, res) => {
 
 			bcrypt.compare(changed, user.ssn, (err, result) => {
 				if (err) {
+					console.log(err);
 					return res.status(400).send({err: 'Kunde inte hitta något autogiro med ditt personnummer. Kontakta oss.'});
 				} else {
 					if (result) {
 						// It's correct, here we should delete it
 						request({uri: configUrl + '/v1/contractinvoice/pause/' + user['public_id'], method: 'PUT', headers: headers}, (err, response, body) => {
 							if (err) {
+								console.log(err);
 								return res.status(400).send({err: err.message});
 							} else {
-								User.deleteOne({public_id: validation.value.publicId}).then(response => {
+								User.updateOne({public_id: validation.value.publicId}, {$set: {active: false}}).then(response => {
 									return res.status(200).send({success: true, msg: 'Autogirot är nu uppsagt.'})
 								}).catch(err => {
+									console.log(err);
 									return res.status(400).send({err: 'Autogiro pausat men kvar i databasen. Vänligen kontakta oss.'});
 								})
 							}
 						});
 					} else {
+						console.log(err);
 						return res.status(400).send({err: 'Kunde inte hitta något autogiro med ditt personnummer. Kontakta oss.'});
 					}
 				}
 			});
 		})
 		.catch(err => {
+			console.log(err);
 			return res.status(400).send({err: 'Vi lyckades inte hitta autogirot. Vänligen kontakta oss.'});
 		});
 	}
