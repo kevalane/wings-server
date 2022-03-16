@@ -129,7 +129,7 @@ const autogiro_startAutogiro = (req, res) => {
 			"AccountNumber": validation.value.accountNumber,
 			"Bank": validation.value.bank,
 			"Amount": validation.value.amount,
-			"WithdrawalDay": 18
+			"WithdrawalDay": 19
 		}
 
 		User.countDocuments({}).then(count => {
