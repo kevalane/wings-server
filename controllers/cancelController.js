@@ -33,6 +33,7 @@ const cancel_cancelAutogiro = (req, res) => {
 	const validation = cancelAutogiroValidator.validate(rawData);
 
 	if (validation.error) {
+		console.log(validation.error);
 		return res.status(400).send({err: validation.error.details[0].message});
 	} else {
 		// Successful validation, let's get the id
@@ -49,12 +50,11 @@ const cancel_cancelAutogiro = (req, res) => {
 				// Check ssn of the first one, they should have the same on all..
 				bcrypt.compare(changed, users[0].ssn, (err, result) => {
 					if (err) {
-						console.log(err);
+						console.log("we are here" + err);
 						return res.status(400).send({err: 'Kunde inte hitta något autogiro med ditt personnummer. Kontakta oss.'});
 					} else {
 						if (result) {
 							// It's correct. send all autogiros
-							console.log(result);
 							return res.status(200).send({success: true, users: users});
 						} else {
 							console.log(result);
