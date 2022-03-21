@@ -81,7 +81,9 @@ const autogiro_pollBankInfo = (req, res) => {
 					// Send qr, needs to be implemented
 					if (result['QR']) {
 						if (result['BankIdAutostartToken']) {
-							res.redirect('bankid:///?autostarttoken=' + result['BankIdAutostartToken'] + '&redirect=https://bidra.wings.se')
+							// res.redirect('bankid:///?autostarttoken=' + result['BankIdAutostartToken'] + '&redirect=https://bidra.wings.se')
+							// res.redirect('https://app.bankid.com/?autostarttoken=' + result['BankIdAutostartToken'] + '&redirect=https://bidra.wings.se');
+							return res.status(200).send({status: 'Waiting', token: result['BankIdAutostartToken']});
 						}
 						// return res.send({qr: result['QR'], publicId: validation.value.publicId, status: 'Waiting'});
 					} else {

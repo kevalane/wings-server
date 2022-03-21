@@ -4,6 +4,7 @@ const app = express();
 const dotenv = require('dotenv').config();
 const request = require('request');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 // Maybe not necessary
 const queryString = require('query-string');
@@ -47,6 +48,20 @@ mongoose.connect(mongooseConnectionString, mongooseOptions)
 // Middleware
 app.use(express.urlencoded({extended: true})); 
 app.use(express.json());
+// app.use(cors({
+// 	origin: ['http://localhost:4200', 'https://app.bankid.com']
+// }));
+
+app.use(function(req, res, next) {
+	const allowedOrigins = ['http://localhost:4200', 'https://app.bankid.com'];
+	const origin = req.headers.origin;
+	if (allowedOrigins.includes(origin)) {
+		res.setHeader('Access-Control-Allow-Origin', origin);
+	}
+	res.header('Access-Control-Allow-Credentials', true);
+	res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+  });
 
 // Initiate app
 app.listen(port, () => {
