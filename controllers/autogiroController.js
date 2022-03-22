@@ -74,27 +74,25 @@ const autogiro_pollBankInfo = (req, res) => {
 			headers: headers
 		}, function (err, response, body) {
 			if (err) {
-				// clearInterval(interval);
 				return res.send({err: err.message});
 			} else {
 				var result = JSON.parse(body);
 				if (result['Status'] == 'Waiting') {
 					// Send qr, needs to be implemented
 					if (result['QR']) {
-						// clearInterval(interval);
-						return res.send({qr: result['QR'], publicId: validation.value.publicId, status: 'Waiting'});
+						// if (result['BankIdAutostartToken']) {
+							return res.status(200).send({status: 'Waiting', qr: result['QR'], token: result['BankIdAutostartToken'], publicId: validation.value.publicId});
+						// }
+						// return res.send({qr: result['QR'], publicId: validation.value.publicId, status: 'Waiting'});
 					} else {
-						return res.send({status: 'Waiting', publicId: validation.value.publicId});
+						return res.send({status: 'Waiting', publicId: validation.value.publicId, token: result['BankIdAutostartToken']});
 					}
 				} else if (result['Status'] == 'Success') {
-					// clearInterval(interval);
 					console.log(result); // remove here
 					return res.send({success: true, accounts: result['AccountNumbers']});
 				} else if (result['Status'] == 'Failed') {
-					// clearInterval(interval);
 					return res.send({err: 'Legitimering via mobilt BankID misslyckades. Vänligen försök igen.'});
 				} else {
-					// clearInterval(interval);
 					return res.send({err: 'Ett okänt fel vid legitimering inträffade.'});
 				}
 			}

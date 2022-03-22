@@ -48,6 +48,17 @@ mongoose.connect(mongooseConnectionString, mongooseOptions)
 app.use(express.urlencoded({extended: true})); 
 app.use(express.json());
 
+app.use(function(req, res, next) {
+	const allowedOrigins = ['http://localhost:4200', 'https://app.bankid.com', 'https://bidra.wings.se', 'https://wings.se'];
+	const origin = req.headers.origin;
+	if (allowedOrigins.includes(origin)) {
+		res.setHeader('Access-Control-Allow-Origin', origin);
+	}
+	res.header('Access-Control-Allow-Credentials', true);
+	res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+  });
+
 // Initiate app
 app.listen(port, () => {
 	console.log('Listening: ' + port);
