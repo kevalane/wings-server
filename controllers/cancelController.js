@@ -37,7 +37,7 @@ const cancel_cancelAutogiro = (req, res) => {
 		return res.status(400).send({err: validation.error.details[0].message});
 	} else {
 		// Successful validation, let's get the id
-		User.find({email: validation.value.email, active: true
+		User.find({email: validation.value.email.toLowerCase(), active: true
 		}).then(users => {
 			console.log(users);
 			if (users.length == 0) {

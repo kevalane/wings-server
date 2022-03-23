@@ -145,7 +145,7 @@ const autogiro_startAutogiro = (req, res) => {
 				var userObj = {
 					id: result[2],
 					ssn: result[1],
-					email: validation.value.email,
+					email: validation.value.email.toLowerCase(),
 					name: validation.value.name,
 					clearingNumber: validation.value.clearingNumber,
 					accountNumber: validation.value.accountNumber,
