@@ -28,7 +28,8 @@ const autogiro_getBankInfo = (req, res) => {
 		amount: req.body.amount,
 		ssn: req.body.ssn,
 		email: req.body.email,
-		bank: req.body.bank
+		bank: req.body.bank,
+		otherDevice: req.body.otherDevice
 	}
 
 	const validation = getBankInfoValidator.validate(rawData);
@@ -38,7 +39,7 @@ const autogiro_getBankInfo = (req, res) => {
 	} else {
 		// Successful validation, lets create the request
 		request({
-			uri: configUrl + '/v1/bank/accounts/' + creditor_id + '?bank=' + validation.value.bank + '&ssn=' + validation.value.ssn + '',
+			uri: configUrl + '/v1/bank/accounts/' + creditor_id + '?bank=' + validation.value.bank + '&ssn=' + validation.value.ssn + '&other_device=' + validation.value.otherDevice,
 			method: 'POST',
 			headers: headers
 		}, function (err, response, body) {
@@ -145,7 +146,7 @@ const autogiro_startAutogiro = (req, res) => {
 				var userObj = {
 					id: result[2],
 					ssn: result[1],
-					email: validation.value.email,
+					email: validation.value.email.toLowerCase(),
 					name: validation.value.name,
 					clearingNumber: validation.value.clearingNumber,
 					accountNumber: validation.value.accountNumber,
