@@ -17,6 +17,9 @@ var bankInfoValidator = Joi.object().keys({
 
 	bank: Joi.string()
 		.max(20)
+		.required(),
+
+	otherDevice: Joi.boolean()
 		.required()
 });
 
